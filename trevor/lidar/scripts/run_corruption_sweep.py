@@ -57,6 +57,10 @@ def main():
     ap.add_argument("--severities", nargs="+", type=int, default=list(C.SEVERITIES))
     ap.add_argument("--seeds", nargs="+", type=int, default=None, help="override the default seeds (0 1 2)")
     ap.add_argument("--np", type=int, default=1, help="GPUs for torchpack dist-run")
+    ap.add_argument("--ann-file", default=None,
+                    help="override data.test.ann_file (e.g. data/nuscenes/mini_infos_val.pkl for a mini dry run)")
+    ap.add_argument("--skip-camera-radar", action="store_true",
+                    help="stub the camera/radar loaders (SDC_SKIP_CAMERA_RADAR=1); needs only LiDAR files on disk")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -74,11 +78,16 @@ def main():
         else:
             env = dict(os.environ)
             env.pop("SDC_CORRUPTION", None)
+            env["SDC_DETERMINISTIC_SWEEPS"] = "1"      # clean run too: nearest-9 sweeps, paired with the corrupted runs
             if name != "clean":
                 env.update(SDC_CORRUPTION=name, SDC_SEVERITY=str(sev), SDC_SEED=str(seed))
             cmd = ["torchpack", "dist-run", "-np", str(args.np), "python", str(runner),
                    args.config, args.checkpoint, "--eval", "bbox",
                    "--eval-options", f"jsonfile_prefix={rdir}"]
+            if args.ann_file:
+                cmd += ["--cfg-options", f"data.test.ann_file={args.ann_file}"]
+            if args.skip_camera_radar:
+                env["SDC_SKIP_CAMERA_RADAR"] = "1"
             print(f"{tag}: {C.REGISTRY[name].describe(sev) if name != 'clean' else 'clean'}\n    "
                   + " ".join(f"{k}={env[k]}" for k in env if k.startswith("SDC_"))
                   + " " + " ".join(shlex.quote(c) for c in cmd))
