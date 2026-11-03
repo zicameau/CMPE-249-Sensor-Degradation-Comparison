@@ -1,18 +1,19 @@
-# Sonata feature-probe environment (CUDA 12.4 / PyTorch 2.5). Separate from the BEVFusion image
+# Sonata feature-probe environment (CUDA 12.1 / PyTorch 2.5). Separate from the BEVFusion image
 # because the two stacks (CUDA 11.3 / torch 1.10 vs CUDA 12 / torch 2.x) cannot share an environment.
 #
-# STATUS: written from Sonata's README ("package mode"), not yet built. FlashAttention is optional
-# (the probe falls back to enable_flash=False); install it only if you need the speed.
+# CUDA 12.1 (not 12.4) on purpose: the laptop's NVIDIA driver 546.x supports CUDA <= 12.3, and a 12.4 image is
+# refused at container start ("unsatisfied condition: cuda>=12.4"). Any driver that supports 12.4 also runs this.
+# FlashAttention is optional (the probe falls back to enable_flash=False); install it only if you need the speed.
 #
 #   docker build -f lidar/docker/Dockerfile.sonata -t sdc-sonata .
-FROM pytorch/pytorch:2.5.0-cuda12.4-cudnn9-devel
+FROM pytorch/pytorch:2.5.0-cuda12.1-cudnn9-devel
 
 ENV DEBIAN_FRONTEND=noninteractive PYTHONPATH=/workspace/sdc/common:/workspace/sdc/lidar
 RUN apt-get update && apt-get install -yq --no-install-recommends git build-essential \
         libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir spconv-cu124 huggingface_hub timm scipy "numpy<2" nuscenes-devkit pytest \
-    && pip install --no-cache-dir torch-scatter -f https://data.pyg.org/whl/torch-2.5.0+cu124.html \
+RUN pip install --no-cache-dir spconv-cu120 huggingface_hub timm addict scipy "numpy<2" nuscenes-devkit pytest \
+    && pip install --no-cache-dir torch-scatter -f https://data.pyg.org/whl/torch-2.5.0+cu121.html \
     && pip install --no-cache-dir git+https://github.com/facebookresearch/sonata.git
 
 WORKDIR /workspace/sdc
