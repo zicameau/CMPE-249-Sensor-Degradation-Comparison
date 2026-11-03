@@ -1,8 +1,0 @@
-.venv/
-data/
-*.pt
-results/*_dets.json
-report/*.aux
-report/*.log
-report/*.out
-report/*.toc
