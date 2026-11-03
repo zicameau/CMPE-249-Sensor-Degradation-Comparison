@@ -1,0 +1,12 @@
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Model & Params (M) & \multicolumn{2}{c}{fp32 ms (KITTI / COCO)} & \multicolumn{2}{c}{fp16 ms (KITTI / COCO)} & \multicolumn{2}{c}{Peak mem. MB (fp32, KITTI / COCO)} & FPS$_{\rm fp32}$ COCO \\
+\midrule
+YOLO11n & 2.6 & 38 & 39 & 41 & 38 & 18 & 34 & 25.5 \\
+YOLO11s & 9.5 & 30 & 35 & 39 & 35 & 51 & 79 & 28.2 \\
+YOLO11m & 20.1 & 44 & 49 & 51 & 48 & 106 & 158 & 20.4 \\
+RT-DETR-L & 33.0 & 113 & 107 & 102 & 91 & 213 & 213 & 9.3 \\
+Faster R-CNN & 41.8 & 149 & 203 & 125 & 157 & 424 & 657 & 4.9 \\
+FCOS & 32.3 & 135 & 193 & 123 & 151 & 283 & 422 & 5.2 \\
+\bottomrule
+\end{tabular}

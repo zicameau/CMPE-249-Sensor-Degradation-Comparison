@@ -1,0 +1,218 @@
+{
+ "yolo11s": {
+  "label_confusions": [
+   [
+    "car->truck",
+    96
+   ],
+   [
+    "truck->train",
+    27
+   ],
+   [
+    "truck->bus",
+    23
+   ],
+   [
+    "car->bus",
+    15
+   ],
+   [
+    "truck->car",
+    3
+   ],
+   [
+    "person->bench",
+    1
+   ]
+  ],
+  "truck_nonmatch": 177,
+  "truck_nonmatch_on": [
+   [
+    "Van",
+    112
+   ],
+   [
+    "Misc",
+    29
+   ],
+   [
+    "Car",
+    25
+   ],
+   [
+    "no GT (IoU<0.5)",
+    10
+   ],
+   [
+    "DontCare",
+    1
+   ]
+  ]
+ },
+ "rtdetr-l": {
+  "label_confusions": [
+   [
+    "car->truck",
+    88
+   ],
+   [
+    "truck->train",
+    23
+   ],
+   [
+    "car->bus",
+    17
+   ],
+   [
+    "truck->bus",
+    9
+   ],
+   [
+    "car->train",
+    3
+   ],
+   [
+    "person->handbag",
+    1
+   ]
+  ],
+  "truck_nonmatch": 771,
+  "truck_nonmatch_on": [
+   [
+    "Car",
+    297
+   ],
+   [
+    "Van",
+    257
+   ],
+   [
+    "no GT (IoU<0.5)",
+    129
+   ],
+   [
+    "Misc",
+    49
+   ],
+   [
+    "DontCare",
+    33
+   ],
+   [
+    "Tram",
+    6
+   ]
+  ]
+ },
+ "frcnn": {
+  "label_confusions": [
+   [
+    "car->truck",
+    84
+   ],
+   [
+    "car->bus",
+    15
+   ],
+   [
+    "truck->bus",
+    9
+   ],
+   [
+    "truck->train",
+    6
+   ],
+   [
+    "car->train",
+    4
+   ],
+   [
+    "person->car",
+    2
+   ]
+  ],
+  "truck_nonmatch": 546,
+  "truck_nonmatch_on": [
+   [
+    "Van",
+    185
+   ],
+   [
+    "no GT (IoU<0.5)",
+    163
+   ],
+   [
+    "Car",
+    123
+   ],
+   [
+    "Misc",
+    52
+   ],
+   [
+    "DontCare",
+    22
+   ],
+   [
+    "Tram",
+    1
+   ]
+  ]
+ },
+ "fcos": {
+  "label_confusions": [
+   [
+    "car->truck",
+    28
+   ],
+   [
+    "car->bus",
+    15
+   ],
+   [
+    "truck->bus",
+    6
+   ],
+   [
+    "person->car",
+    4
+   ],
+   [
+    "person->dining table",
+    2
+   ],
+   [
+    "car->person",
+    2
+   ]
+  ],
+  "truck_nonmatch": 2557,
+  "truck_nonmatch_on": [
+   [
+    "Car",
+    1232
+   ],
+   [
+    "no GT (IoU<0.5)",
+    847
+   ],
+   [
+    "Van",
+    293
+   ],
+   [
+    "DontCare",
+    125
+   ],
+   [
+    "Misc",
+    53
+   ],
+   [
+    "Tram",
+    7
+   ]
+  ]
+ }
+}
