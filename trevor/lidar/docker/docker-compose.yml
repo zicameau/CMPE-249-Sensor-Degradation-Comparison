@@ -1,0 +1,21 @@
+# Usage (repo root):
+#   NUSCENES_DIR=/abs/path/to/nuscenes docker compose -f lidar/docker/docker-compose.yml run --rm lidar bash
+services:
+  lidar:
+    image: sdc-lidar
+    build:
+      context: ../..
+      dockerfile: lidar/docker/Dockerfile
+    shm_size: 16g
+    volumes:
+      - ../..:/workspace/sdc                       # this repo (live edits, no rebuild)
+      - ${NUSCENES_DIR:?set NUSCENES_DIR}:/dataset # nuScenes + the *_infos_*.pkl from create_data.py
+      - ${PRETRAINED_DIR:-./pretrained}:/workspace/bevfusion/pretrained
+      - ${RESULTS_DIR:-./results}:/results
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
