@@ -17,10 +17,11 @@ Passed as `--degrade key=value ...` to `tools/test.py`. Point-cloud changes are 
 | `sweeps_num=0` | LiDAR | Number of previous sweeps merged (default 9) | Missing scans / no temporal history |
 | `max_range=30` | LiDAR | Removes points beyond this distance (m) | Limited sensing range (fog, rain) |
 | `brightness=0.25` | Camera | Scales image brightness (1.0 = unchanged) | Low light, night |
+| `contrast=0.3` | Camera | Scales image contrast (1.0 = unchanged, 0.0 = flat gray) | Fog, haze |
 | `blur=5` | Camera | Gaussian blur radius in pixels | Dirty lens, motion blur, rain |
 | `drop_cams=[CAM_FRONT]` | Camera | Replaces listed cameras with black frames | Camera failure / missing frames |
 
-Random point drop is seeded per sample, so each condition removes the same points on every run.
+Random point drop is seeded per sample, so each condition removes the same points on every run. Options can be combined in one run to degrade both sensors at once, e.g. `--degrade contrast=0.3 blur=5 max_range=25 point_drop=0.5`.
 
 ## Running
 
@@ -36,7 +37,7 @@ torchpack dist-run -np 1 python tools/test.py \
   --metrics-out results/example.json
 ```
 
-Full sweep (24 conditions, about 15 s inference + ~30 s startup each on an RTX 4070 SUPER):
+Full sweep (38 conditions, about 15 s inference + ~30 s startup each on an RTX 4070 SUPER, ~30 min total):
 
 ```bash
 python tools/run_degradation_sweep.py
@@ -48,7 +49,16 @@ Only some groups:
 python tools/run_degradation_sweep.py --groups lidar_point_drop cam_drop
 ```
 
-Groups: `lidar_point_drop`, `lidar_beams`, `lidar_sweeps`, `lidar_range`, `cam_brightness`, `cam_blur`, `cam_drop`. The clean baseline always runs first. Output goes to `results/degradation/fusion/`: one `.json` and `.log` per condition, plus `summary.csv` (mAP, NDS, per-class AP, fps). Finished conditions are skipped, so an interrupted sweep can be rerun.
+Groups:
+
+| Group | Runs | What it tests |
+|---|---:|---|
+| `lidar_point_drop`, `lidar_beams`, `lidar_sweeps`, `lidar_range` | 14 | One LiDAR stressor, cameras clean |
+| `cam_brightness`, `cam_blur`, `cam_drop` | 9 | One camera stressor, LiDAR clean |
+| `combined` | 6 | Fog, rain, night-rain, and hardware-fault scenarios degrading both sensors |
+| `lidar_stress_no_cams` | 8 | The hardest LiDAR stressors with all cameras off; compare with the matching `lidar_*` run to measure how much the camera rescues |
+
+The clean baseline always runs first. Output goes to `results/degradation/fusion/`: one `.json` and `.log` per condition, plus `summary.csv` (mAP, NDS, per-class AP, fps). Finished conditions are skipped, so an interrupted sweep can be rerun.
 
 The same script can evaluate the LiDAR-only checkpoint for comparison:
 
