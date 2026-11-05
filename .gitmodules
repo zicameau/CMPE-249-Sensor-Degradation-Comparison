@@ -1,0 +1,4 @@
+[submodule "bevfusion"]
+	path = bevfusion
+	url = https://github.com/christiankso/bevfusion.git
+	branch = cmpe249-fixes
