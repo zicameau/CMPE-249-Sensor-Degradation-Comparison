@@ -1,0 +1,34 @@
+experiment:
+  name: yolo11s_mini_val
+  dataset: nuscenes
+  version: v1.0-mini
+  split: mini_val
+  camera: CAM_FRONT
+  manifest: configs/mini_val_sample_tokens.txt
+
+model:
+  name: yolo11s
+  weights: yolo11s.pt
+  inference_confidence: 0.001
+
+evaluation:
+  iou_threshold: 0.5
+  fixed_confidence: 0.25
+  classes:
+    - car
+    - truck
+    - bus
+    - person
+    - bicycle
+    - motorcycle
+
+corruptions:
+  clean: [0]
+  brightness:
+    1: 0.5
+    2: 0.25
+    3: 0.1
+  blur:
+    1: 2.0
+    2: 5.0
+    3: 10.0

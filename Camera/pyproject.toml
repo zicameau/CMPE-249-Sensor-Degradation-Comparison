@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "sdc-camera"
+version = "0.1.0"
+description = "CMPE249 camera lane core utilities"
+requires-python = ">=3.10"
+dependencies = ["numpy", "opencv-python", "Pillow"]
+[project.optional-dependencies]
+eval = ["nuscenes-devkit", "ultralytics"]
+test = ["pytest"]
+[tool.setuptools.packages.find]
+include = ["sdc_camera*"]

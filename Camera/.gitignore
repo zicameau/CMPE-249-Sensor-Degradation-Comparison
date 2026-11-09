@@ -1,0 +1,24 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.egg-info/
+
+# Local datasets and model weights
+data/
+*.pt
+*.pth
+
+# Large generated evaluation files
+results/**/predictions.csv
+results/**/ground_truth.csv
+results/**/metrics.json
+
+# Keep small summaries and documentation
+!results/README.md
+!results/camera_mini_val_summary.csv
+
+# ROS 2 generated files
+ros2/build/
+ros2/install/
+ros2/log/
