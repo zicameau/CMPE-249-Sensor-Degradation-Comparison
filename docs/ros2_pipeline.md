@@ -77,8 +77,24 @@ Useful options:
 |---|---|---|
 | `--rate 0.1` | replay | Play at a tenth of real time (no frames dropped) |
 | `--process-all` | node | Queue every sweep instead of dropping; use with a slow `--rate` and `--sync-timeout 3` for accuracy checks |
+| `--keyframes-only` | node | Process only the 81 labeled keyframes (all sweeps still buffered for merging); keeps up at 1× so accuracy can be measured without dropped frames |
+| `--sweeps 0` | node | Number of previous LiDAR sweeps to merge (default 9) |
+| `--sync-timeout 0.5` | node | Max seconds to wait for camera images (default 0.2) |
 | `--degrade point_drop=0.5 brightness=0.25` | node | Same degradation options as the offline sweep, applied live |
 | `--idle-timeout 10` | node | Exit and save results 10 s after the last LiDAR message |
+| `--camera-clock-offset-ms 100` | replay | Camera timestamps read 100 ms later than the true capture time (unsynchronized clock) |
+| `--camera-delay-ms 100` | replay | Correct timestamps, but images delivered 100 ms late (slow link) |
+
+The evaluator reports two accuracies: **model mAP** (boxes computed from each keyframe's own sweep) and **real-time mAP** (the newest boxes already published when each keyframe arrived, moved to cancel the car's motion; plus a velocity-extrapolated version). It also reports throughput, per-stage latency percentiles, and CPU/GPU/memory use (`--gpu-log` takes an `nvidia-smi` CSV).
+
+### Timing stress suite
+
+```bash
+bash ros2/run_timing_stress.sh            # all runs, ~25 min; finished runs are skipped
+bash ros2/run_timing_stress.sh rate2 delay100   # selected runs
+```
+
+Runs: replay at 1× (×3), 2×, 4×; camera clock offset 0–500 ms and all cameras off (keyframes only); camera delay 100/300 ms (and 300 ms with a 500 ms sync timeout); no previous sweeps, 75% point drop, darkened images. Output in `results/ros/stress/`: per run a `.pkl` (raw), `.json` (scored), node/replay/eval logs, and a GPU CSV. `ros2/compare_common_keyframes.py` re-scores several runs on the keyframes all of them processed. Results: [../results/ros2_timing_stress.md](../results/ros2_timing_stress.md).
 
 You can watch topics from a third terminal with `ros2 topic list`, `ros2 topic hz /bevfusion/detections` (output rate), or `ros2 topic echo /bevfusion/detections`.
 

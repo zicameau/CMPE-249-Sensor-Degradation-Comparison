@@ -1,0 +1,67 @@
+{
+  "results": "results/ros/stress/delay300.pkl",
+  "node_args": {
+    "config": "configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml",
+    "checkpoint": "pretrained/bevfusion-det.pth",
+    "sweeps": 9,
+    "process_all": false,
+    "keyframes_only": false,
+    "infos": "data/nuscenes/nuscenes_infos_val.pkl",
+    "monitor_interval": 0.5,
+    "sync_timeout": 0.2,
+    "sync_tolerance_ms": 100,
+    "publish_score_thr": 0.1,
+    "degrade": null,
+    "save_results": "results/ros/stress/delay300.pkl",
+    "idle_timeout": 10.0
+  },
+  "node_stats": {
+    "received": 788,
+    "dropped": 551,
+    "skipped_no_sync": 237
+  },
+  "keyframes": 81,
+  "keyframes_processed": 0,
+  "mAP": 0.0,
+  "NDS": 0.0,
+  "lidar_input_hz": 20.055202948876758,
+  "throughput_hz": 0.0,
+  "resources": {
+    "cpu_percent": {
+      "mean": 8.368421052631579,
+      "p50": 8.2,
+      "p90": 16.0,
+      "p99": 18.24000000000001,
+      "max": 22.0
+    },
+    "rss_mb": {
+      "mean": 6868.2792351973685,
+      "p50": 6868.52734375,
+      "p90": 6868.671875,
+      "p99": 6868.671875,
+      "max": 6868.671875
+    },
+    "gpu_util_percent": {
+      "mean": 8.056818181818182,
+      "p50": 5.0,
+      "p90": 24.599999999999994,
+      "p99": 33.129999999999995,
+      "max": 34.0
+    },
+    "gpu_mem_used_mb": {
+      "mean": 3078.7613636363635,
+      "p50": 3074.0,
+      "p90": 3100.0,
+      "p99": 3100.0,
+      "max": 3100.0
+    },
+    "torch_gpu_peak_mb": {
+      "mean": 158.00146484375,
+      "p50": 158.00146484375,
+      "p90": 158.00146484375,
+      "p99": 158.00146484375,
+      "max": 158.00146484375
+    }
+  },
+  "metrics": {}
+}

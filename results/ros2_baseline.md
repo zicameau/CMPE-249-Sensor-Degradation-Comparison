@@ -34,38 +34,19 @@ Replay at 0.1× speed with `--process-all`, so every sweep is processed and noth
 
 ## 2. Real time: replay at 1× (newest-frame mode)
 
-The node always processes the newest sweep and drops any that arrived while it was busy, like a deployed system.
+**Correction (2026-11-15):** the first real-time run reported here (3.3 Hz throughput, 438 ms latency) was wrong. The replay publisher could not keep real time; each 19.5 s scene took ~26 s, so it was effectively 0.75× speed and the throughput was divided by the wrong duration. After fixing the publisher, three runs at true 1× speed give:
 
 | Measure | Value |
 |---|---:|
-| LiDAR sweeps received | 788 (20 Hz) |
-| Sweeps processed | **131 (17%) ≈ 3.3 Hz** |
-| Sweeps dropped (node busy) | 657 |
-| Labeled keyframes processed exactly | 14 of 81 |
+| LiDAR input | 20 Hz |
+| Throughput | **2.5 Hz** (about 1 in 8 sweeps) |
+| Latency p50 / p90 / p99 | **416 / 473 / 672 ms** |
+| Real-time mAP / NDS | 0.378 / 0.463 |
+| Real-time mAP / NDS, velocity-extrapolated | 0.483 / 0.519 |
 
-**Latency per processed sweep** (ms), from the LiDAR message arriving to boxes being published:
+**Latency per processed sweep** (median, ms): queue 30 · camera sync 33 · preprocessing 136 (decode 6 JPEGs, merge 10 sweeps of ~233k points, resize/normalize) · inference 218 · publish 3.
 
-| Stage | What it is | p50 | p90 | p99 |
-|---|---|---:|---:|---:|
-| queue | Waiting for the worker to pick the sweep up | 43 | 78 | 90 |
-| sync | Waiting for the matching camera images | 20 | 77 | 159 |
-| preprocess | Decode 6 JPEGs, merge 10 sweeps (~233k points), resize/normalize | 135 | 145 | 175 |
-| inference | BEVFusion on the GPU | 224 | 245 | 266 |
-| publish | Build and send the ROS 2 message | 3 | 4 | 5 |
-| **total latency** | | **438** | **494** | **637** |
-
-(p50 = median; p90 / p99 = 90% / 99% of frames were faster than this.)
-
-### What this means
-
-- **BEVFusion keeps up with about 1 in 6 LiDAR sweeps.** One frame takes ~360 ms of compute (preprocess + inference), so the node can do about 3 frames per second, while the LiDAR produces 20.
-- **Boxes describe the world as it was ~0.44 s earlier.** At 50 km/h (14 m/s) the car travels about 6 m in that time, so a planner using these boxes must account for the delay.
-- **Preprocessing costs over half as much as the model itself** (135 ms vs 224 ms). It runs in Python on the CPU (JPEG decoding, point merging), so it is the easiest target for speedups, e.g. GPU image decoding or merging sweeps incrementally.
-- **Camera sync adds 20 ms typically, up to ~160 ms.** A fusion model has to wait for all six cameras; a LiDAR-only model would not.
-
-### Why the keyframe-only mAP is not reported as the real-time accuracy
-
-Scoring only the 14 keyframes the node happened to process, and counting the other 67 as "nothing detected", gives mAP 0.044. That understates what a vehicle would have: at each keyframe the node had already published boxes from an earlier sweep. With ~440 ms latency and a new output every ~300 ms, those boxes are roughly 0.4–0.8 s old (an estimate from the timing above, not yet measured per keyframe). A fair real-time accuracy measure uses, at each keyframe, the most recent boxes available at that moment, shifted for the car's own movement since. That evaluation is the next step.
+Real-time accuracy uses, at each keyframe, the newest boxes the node had already published, moved to cancel the car's own motion; counting only the few keyframes the node processed exactly would understate it. Full results, definitions, resource use, and the timing stress tests: [ros2_timing_stress.md](ros2_timing_stress.md).
 
 ## Limitations
 

@@ -46,3 +46,11 @@ python tools/create_data.py nuscenes --root-path ./data/nuscenes \
 torchpack dist-run -np 1 python tools/test.py \
   configs/nuscenes/det/transfusion/secfpn/camera+lidar/swint_v0p075/convfuser.yaml \
   pretrained/bevfusion-det.pth --eval bbox
+
+
+AFTER DEGRADTION:
+  REPLAY LIVE
+  TESTING VARYING SPEEDS(FASTER INPUTS)
+  MISMATCH TIMING BETWEEN SENSORS(CAMERA TIME STAMPS ARE WRONG)
+  CAMERA PIPLINE DELAYED(CORRECT TIME STAMP BUT THEY ARRIVE LATE)
+  DEGRADATIONS PLUS LIVE REPLAY
