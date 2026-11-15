@@ -1,69 +1,56 @@
-## YOLO11 Camera Lane — Experimental Progress
+# YOLO11s Camera Perception Lane
 
-### Overview
+## Overview
 
-This lane evaluates YOLO11s as a camera-only object detection baseline using the nuScenes dataset. The objective is to measure detection accuracy and robustness under controlled camera degradation and establish a common 2D evaluation framework for comparison with LiDAR-only and camera–LiDAR fusion detectors.
+This project evaluates **YOLO11s as a camera-only object detection baseline** for autonomous-driving perception under controlled image degradation.
 
-### Completed Implementation
+Using the nuScenes dataset and ROS 2, the camera lane measures detection accuracy, robustness, and CPU inference latency. It also provides a common camera-space evaluation framework to support comparisons with the CenterPoint LiDAR-only and BEVFusion camera–LiDAR fusion lanes.
 
-- Modular YOLO11 inference using Ultralytics.
-- Camera corruption functions for brightness reduction and Gaussian blur.
-- Projection of nuScenes 3D ground-truth annotations into 2D camera bounding boxes.
-- Class-aware IoU matching and AP50 evaluation.
-- Reproducible mini-validation experiments using a fixed sample manifest.
-- Unit tests validated on Windows and Google Colab.
+**Status:** Independent camera implementation, experiments, and validation complete. Cross-model integration is pending teammate results.
 
-### Experimental Results
+## Implementation
 
-Dataset: nuScenes v1.0-mini, mini-validation split  
-Camera: CAM_FRONT  
-Model: YOLO11s  
-Evaluated samples: 81 keyframes  
-Metric: Projected 2D mAP@0.50
+The camera lane includes:
 
-| Condition | mAP50 | Resilience Rate |
-|---|---:|---:|
-| Clean | 0.3528 | 1.000 |
-| Brightness 1 | 0.3735 | 1.058 |
-| Brightness 2 | 0.3445 | 0.976 |
-| Brightness 3 | 0.2077 | 0.589 |
-| Blur 1 | 0.3306 | 0.937 |
-| Blur 2 | 0.2397 | 0.679 |
-| Blur 3 | 0.1333 | 0.378 |
+- Pretrained YOLO11s object detection using Ultralytics.
+- nuScenes CAM_FRONT image replay through ROS 2.
+- ROS 2 image corruption and detector nodes.
+- Brightness reduction and Gaussian blur at three severity levels each.
+- Projection of nuScenes 3D annotations into 2D camera bounding boxes.
+- Class-aware AP50, precision, recall, distance-based recall, and per-scene evaluation.
+- ROS 2 inference and callback latency measurement.
+- Shared-format metric exports for team integration.
 
-### Preliminary Findings
+### ROS 2 Architecture
 
-Gaussian blur caused a progressive decline in detection accuracy, with resilience falling below 0.8 at severity 2. Brightness reduction produced a smaller initial effect, with resilience falling below 0.8 at severity 3.
-
-These findings are preliminary and do not yet include scene-level confidence intervals.
-
-### Evaluation Limitations
-
-- The current evaluation covers CAM_FRONT only.
-- Projected 3D ground-truth boxes are approximations of visible 2D object extents.
-- Cross-model comparisons require identical sample selection, class mappings, projection rules, and corruption implementations.
-- Results are from nuScenes mini-validation, not the full nuScenes validation benchmark.
-
-### Next Development Milestones
-
-1. Implement the ROS 2 YOLO11 detector node.
-2. Implement the ROS 2 camera corruption node.
-3. Integrate with the shared nuScenes replay pipeline.
-4. Export results using the team's common schema.
-5. Add distance-binned recall and scene-level bootstrap confidence intervals.
-6. Generate qualitative failure-case visualizations.
-
-## Quick start
-
-From this folder:
-
-```bash
-python -m pip install -e '.[test]'
-python -m pytest -q
-python -m pip install -e '.[eval]'
-python scripts/run_camera_sweep.py --dataroot /path/to/nuscenes --out results/camera --limit 20
+```text
+nuScenes CAM_FRONT replay
+          |
+          v
+  /camera/image_raw
+          |
+          v
+ Camera corruption node
+          |
+          v
+/camera/image_corrupted
+          |
+          v
+ YOLO11s detector node
+          |
+          v
+  /camera/detections
 ```
 
+The detector publishes `vision_msgs/Detection2DArray` messages. For the clean latency baseline, replay images are published directly to `/camera/image_corrupted`.
 
+## Dataset and Evaluation
 
-See `notebooks/YOLO11_Investigation_proj.ipynb` for the original experimental checkpoint.
+| Configuration | Value |
+|---|---|
+| Dataset | nuScenes v1.0-mini |
+| Evaluation subset | 81 mini-validation samples |
+| Scenes | scene-0103 and scene-0916 |
+| Camera | CAM_FRONT |
+| Model | YOLO11s |
+| Target classes

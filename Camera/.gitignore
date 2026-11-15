@@ -1,24 +1,93 @@
+
+# ==========================================
+# Python environments and generated files
+# ==========================================
 .venv/
+venv/
 __pycache__/
 .pytest_cache/
-*.pyc
+*.py[cod]
 *.egg-info/
+.mypy_cache/
+.ruff_cache/
 
+# ==========================================
 # Local datasets and model weights
+# ==========================================
 data/
+datasets/
 *.pt
 *.pth
+*.ckpt
+*.onnx
+*.engine
 
+# ==========================================
 # Large generated evaluation files
+# ==========================================
 results/**/predictions.csv
 results/**/ground_truth.csv
 results/**/metrics.json
 
-# Keep small summaries and documentation
+# Preserve final validated camera evaluation
+!results/camera_shared_mini_val/predictions.csv
+!results/camera_shared_mini_val/ground_truth.csv
+!results/camera_shared_mini_val/metrics.json
+
+# ==========================================
+# Preliminary and diagnostic experiments
+# ==========================================
+results/latency_test.csv
+results/ros2_detector_latency.csv
+results/ros2_nuscenes_clean_latency.csv
+results/ros2_nuscenes_clean_latency_v2.csv
+results/yolo11_checkpoint_predictions.csv
+results/yolo_shared_eval.json
+
+# ==========================================
+# Final evaluation summaries
+# These files remain tracked
+# ==========================================
 !results/README.md
 !results/camera_mini_val_summary.csv
+!results/camera_shared_metrics.csv
+!results/camera_all_shared_metrics.csv
+!results/camera_accuracy_latency_summary.csv
+!results/camera_ros2_latency_summary.csv
+!results/camera_ros2_shared_latency_metrics.csv
 
+# ==========================================
 # ROS 2 generated files
+# ==========================================
 ros2/build/
 ros2/install/
 ros2/log/
+
+# ==========================================
+# Experiment and training artifacts
+# ==========================================
+runs/
+wandb/
+tensorboard/
+events.out.tfevents.*
+
+# ==========================================
+# Jupyter notebooks
+# ==========================================
+.ipynb_checkpoints/
+
+# ==========================================
+# IDE and operating system files
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Temporary files
+# ==========================================
+*.tmp
+*.bak
+*.swp
+*~
