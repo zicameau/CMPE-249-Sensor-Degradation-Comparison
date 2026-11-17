@@ -62,6 +62,21 @@ if os.environ.get("SDC_SKIP_CAMERA_RADAR") == "1":
             return results
 
 
+# --- optional: do the devkit evaluation in a separate process ---------------------------------------
+# NuScenesEval on 6,019 samples needs several GB on top of the (still resident) model + dataset; on an 8 GB Docker VM
+# that wedged the Docker engine once.  With SDC_SKIP_INPROC_EVAL=1 the test run only writes results_nusc.json and the
+# sweep driver then runs ``scripts/eval_results_json.py`` in a fresh process (same devkit call, same numbers: verified
+# on the full-val gate run).
+if os.environ.get("SDC_SKIP_INPROC_EVAL") == "1":
+    from mmdet3d.datasets import NuScenesDataset
+
+    def _skip_inproc_eval(self, result_path, *args, **kwargs):
+        print("SDC_SKIP_INPROC_EVAL=1: detections written, devkit evaluation deferred")
+        return {"object/nds": float("nan"), "object/map": float("nan")}
+
+    NuScenesDataset._evaluate_single = _skip_inproc_eval
+
+
 @PIPELINES.register_module(name="LoadPointsFromMultiSweeps", force=True)
 class CorruptedLoadPointsFromMultiSweeps(_Original):
     def __init__(self, *args, corruption=None, severity=None, seed=None, **kwargs):

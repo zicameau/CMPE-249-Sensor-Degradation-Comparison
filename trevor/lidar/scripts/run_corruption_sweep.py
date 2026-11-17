@@ -61,6 +61,11 @@ def main():
                     help="override data.test.ann_file (e.g. data/nuscenes/mini_infos_val.pkl for a mini dry run)")
     ap.add_argument("--skip-camera-radar", action="store_true",
                     help="stub the camera/radar loaders (SDC_SKIP_CAMERA_RADAR=1); needs only LiDAR files on disk")
+    ap.add_argument("--version", default="v1.0-trainval", choices=["v1.0-trainval", "v1.0-mini"],
+                    help="nuScenes version for the separate devkit evaluation (use v1.0-mini with mini infos)")
+    ap.add_argument("--inproc-eval", action="store_true",
+                    help="evaluate inside the test process (default: write detections, then run "
+                         "eval_results_json.py in a fresh process - needs far less peak memory)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -91,14 +96,28 @@ def main():
             print(f"{tag}: {C.REGISTRY[name].describe(sev) if name != 'clean' else 'clean'}\n    "
                   + " ".join(f"{k}={env[k]}" for k in env if k.startswith("SDC_"))
                   + " " + " ".join(shlex.quote(c) for c in cmd))
+            if not args.inproc_eval:
+                env["SDC_SKIP_INPROC_EVAL"] = "1"
             if args.dry_run:
                 continue
             rdir.mkdir(parents=True, exist_ok=True)
             t0 = time.time()
-            with open(rdir / "run.log", "w", encoding="utf-8") as log:
-                rc = subprocess.run(cmd, cwd=args.bevfusion_dir, env=env, stdout=log,
-                                    stderr=subprocess.STDOUT).returncode
-            print(f"    exit {rc} in {time.time() - t0:.0f}s (log: {rdir / 'run.log'})")
+            rc = 0
+            if (rdir / "results_nusc.json").exists() and not args.inproc_eval:
+                print("    detections already on disk (results_nusc.json): evaluating only")
+            else:
+                with open(rdir / "run.log", "w", encoding="utf-8") as log:
+                    rc = subprocess.run(cmd, cwd=args.bevfusion_dir, env=env, stdout=log,
+                                        stderr=subprocess.STDOUT).returncode
+                print(f"    exit {rc} in {time.time() - t0:.0f}s (log: {rdir / 'run.log'})")
+            if rc == 0 and not args.inproc_eval and (rdir / "results_nusc.json").exists():
+                t1 = time.time()
+                with open(rdir / "eval.log", "w", encoding="utf-8") as log:
+                    rc = subprocess.run(
+                        [sys.executable, str(ROOT / "lidar" / "scripts" / "eval_results_json.py"), "--run-dir", str(rdir),
+                         "--dataroot", "data/nuscenes", "--version", args.version],
+                        cwd=args.bevfusion_dir, env=env, stdout=log, stderr=subprocess.STDOUT).returncode
+                print(f"    devkit eval exit {rc} in {time.time() - t1:.0f}s (log: {rdir / 'eval.log'})")
             if rc != 0 or not (rdir / "metrics_summary.json").exists():
                 print("    FAILED - continuing with the next run (rerun the script to retry)", file=sys.stderr)
                 failed.append(run_name(name, sev, seed))
@@ -109,8 +128,9 @@ def main():
         print(f"\n{len(failed)} run(s) failed: {', '.join(failed)}")
     print("\nNext (CIs, RR, mRR, failure thresholds -> shared CSV):\n"
           f"  python {ROOT / 'common' / 'tools' / 'bootstrap_sweep.py'} --sweep-dir {out_dir} \\\n"
-          "      --nuscenes-root data/nuscenes --model bevfusion_lidar --lane lidar \\\n"
-          "      --hardware <laptop|hpc_a40> --results-csv /results/results.csv")
+          "      --nuscenes-root data/nuscenes --version v1.0-trainval --model bevfusion_lidar --lane lidar \\\n"
+          "      --hardware <laptop|hpc_a40> --results-csv /results/results.csv\n"
+          "(use --version v1.0-mini and your mini sweep dir for a dry run; check the flags with --help)")
 
 
 if __name__ == "__main__":

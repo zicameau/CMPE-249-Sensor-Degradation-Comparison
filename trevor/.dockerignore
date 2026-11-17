@@ -1,8 +1,0 @@
-.git
-**/__pycache__
-.pytest_cache
-data
-results
-pretrained
-*.pth
-*.pkl
