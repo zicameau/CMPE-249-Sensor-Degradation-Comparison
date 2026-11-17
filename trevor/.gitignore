@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# data / outputs - never commit
+/data/
+/results/
+/pretrained/
+*.pth
+*.pkl
+*.bin
+*.npy
+
+# ROS 2 workspace artifacts
+build/
+install/
+log/

@@ -1,0 +1,16 @@
+[project]
+name = "sensor-degradation-comparison"
+version = "0.1.0"
+description = "CMPE 249: camera vs LiDAR vs fusion under sensor degradation"
+requires-python = ">=3.8"
+dependencies = ["numpy"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+plots = ["pandas", "matplotlib"]
+
+# Not installed as a package: lane code is imported via PYTHONPATH=common:lidar
+# (pytest picks this up from the settings below; Docker images set it explicitly).
+[tool.pytest.ini_options]
+testpaths = ["common/tests", "lidar/tests"]
+pythonpath = ["common", "lidar"]
