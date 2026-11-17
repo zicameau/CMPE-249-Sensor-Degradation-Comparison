@@ -6,6 +6,16 @@ Shared piece: **LiDAR corruption node** (point drop, beam reduction, range limit
 
 ## Status
 
+**Reproduction gate (full val, 6,019 samples, stock loader, laptop RTX 4050, fp16): mAP 64.69 / NDS 69.25 vs
+published 64.68 / 69.28 - gap +0.01 / -0.03.** Passed. (`lidar/results/gate_orig_metrics_summary.json`.)
+
+**Mini sweep (81 samples = the camera lane's `mini_val_sample_tokens.txt`; all 41 runs, bootstrap + CSV done):**
+`lidar/results/mini_results.csv`, `lidar/results/mini_distance_recall.csv`. Clean mAP 0.542; mRR(mAP) 0.783 [0.754, 0.814].
+mAP by severity 1..5 (mean over seeds): point_drop .541 .534 .524 .498 .428; beam_reduction .496 .418 .331 .230 .100;
+range_limit .542 .522 .454 .303 .057; missing_sweeps .543 .540 .527 .500 .402. The bootstrap's clean mAP/NDS equal the
+devkit's. With only 2 scenes the scene-bootstrap CIs on mini are degenerate/wide - do not quote them.
+The full-val sweep (41 runs) is the headline result and is running on the laptop (see the Runbook).
+
 | Piece | State |
 |---|---|
 | Corruptions (`sdc_lidar/corruptions.py`) | Done, unit-tested |
