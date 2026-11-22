@@ -119,11 +119,21 @@ Accuracy values come from offline evaluation. Latency and detection counts come 
 
 ## Team Integration
 
-Other perception lanes should use the shared mini-val sample manifest and the same corruption definitions where applicable.
+The shared CAM_FRONT 2D comparison has been completed using 81 nuScenes mini-validation samples.
 
-The 3D prediction adapter can project detections into camera space for comparison, but requires the corresponding teammate prediction files.
+YOLO11s predictions were evaluated directly in image coordinates. TransFusion-L and BEVFusion predictions were projected from global 3D coordinates into CAM_FRONT using nuScenes calibration information.
 
-YOLO11s 2D mAP50 should not be directly equated with nuScenes 3D mAP without a clearly defined common evaluation protocol.
+The comparison uses the same ground-truth annotations, class taxonomy, and AP50 evaluation implementation for all three models.
+
+Results are available in:
+
+results/shared_2d_comparison/three_model_comparison.csv
+
+results/shared_2d_comparison/README.md
+
+The 3D model results use a diagnostic half-height Z-coordinate adjustment. Because the exporters' coordinate conventions have not been independently verified, these scores remain provisional.
+
+The shared comparison covers clean-condition detection performance. The camera-specific brightness and Gaussian blur experiments remain separate and should not be presented as matched three-model degradation comparisons.
 
 ## Limitations
 

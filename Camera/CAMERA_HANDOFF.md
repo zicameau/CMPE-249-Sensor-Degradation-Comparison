@@ -110,18 +110,31 @@ Accuracy and latency were evaluated in separate runs.
 5. Do not interpret blank confidence interval or seed fields as zero.
 6. Do not interpret absent-class AP as zero.
 
-## Pending Dependencies
+## Completed Cross-Lane Integration
 
-- BEVFusion results from the fusion lane
-- CenterPoint results from the LiDAR lane
-- Agreed cross-model comparison protocol
-- Optional projection of teammate 3D predictions into camera space
+The camera-space comparison of YOLO11s, TransFusion-L, and BEVFusion is complete.
 
-The camera lane includes `sdc_camera/prediction_adapter.py`
-for projecting official-format nuScenes 3D detections into 2D.
+Integration deliverables:
 
-This adapter requires teammate prediction files before
-cross-model camera-space evaluation can be performed.
+Shared 81-sample validation manifest
+
+Shared CAM_FRONT 2D ground truth
+
+Original TransFusion-L and BEVFusion nuScenes-format prediction exports
+
+Reproducible 3D-to-2D projection and diagnostic Z-coordinate adjustment
+
+Consolidated three-model AP50 comparison CSV
+
+Regression tests (23 passing)
+
+Results: YOLO11s 0.3444, TransFusion-L 0.4790, and BEVFusion 0.4985 mAP50.
+
+The TransFusion-L and BEVFusion scores are provisional because the original exporters' vertical coordinate conventions have not been verified.
+
+Remaining verification: Confirm the original 3D export conventions and investigate the LiDAR export metadata indicating camera usage.
+
+See results/shared_2d_comparison/README.md for the full evaluation methodology and reproduction commands.
 
 ## Documentation
 

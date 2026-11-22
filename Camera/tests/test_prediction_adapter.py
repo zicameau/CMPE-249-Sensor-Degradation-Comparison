@@ -28,7 +28,7 @@ def test_prediction_class(name, expected):
 def test_projection_matches_ground_truth():
     nusc = NuScenes(
         version="v1.0-mini",
-        dataroot="/mnt/c/SJSU/datasets/nuScenes",
+        dataroot=r"C:\SJSU\datasets\nuScenes",
         verbose=False,
     )
 

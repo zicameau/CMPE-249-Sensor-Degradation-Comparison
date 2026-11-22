@@ -1,0 +1,76 @@
+{
+  "model": "bevfusion_corrected",
+  "camera": "CAM_FRONT",
+  "metric_definition": "VOC-style continuous AP at IoU=0.50; excludes classes without GT",
+  "manifest_sample_count": 81,
+  "samples_present_in_predictions": 81,
+  "missing_sample_count": 0,
+  "missing_sample_tokens": [],
+  "extra_prediction_sample_count": 0,
+  "empty_detection_sample_count": 0,
+  "z_correction": "half-height",
+  "z_correction_status": "diagnostic_unverified",
+  "z_corrected_detection_count": 12318,
+  "projected_detection_count": 2754,
+  "ground_truth_box_count": 1310,
+  "metrics": {
+    "per_class": {
+      "car": {
+        "ap2d_50": 0.6564573236716127,
+        "gt_count": 855,
+        "tp": 480,
+        "fp": 24,
+        "fn": 375,
+        "precision": 0.9523809523809523,
+        "recall": 0.5614035087719298
+      },
+      "truck": {
+        "ap2d_50": 0.4040998806703139,
+        "gt_count": 47,
+        "tp": 12,
+        "fp": 3,
+        "fn": 35,
+        "precision": 0.8,
+        "recall": 0.2553191489361702
+      },
+      "bus": {
+        "ap2d_50": null,
+        "gt_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": null
+      },
+      "person": {
+        "ap2d_50": 0.6435456162063106,
+        "gt_count": 299,
+        "tp": 184,
+        "fp": 41,
+        "fn": 115,
+        "precision": 0.8177777777777778,
+        "recall": 0.6153846153846154
+      },
+      "bicycle": {
+        "ap2d_50": 0.42328042328042326,
+        "gt_count": 15,
+        "tp": 7,
+        "fp": 3,
+        "fn": 8,
+        "precision": 0.7,
+        "recall": 0.4666666666666667
+      },
+      "motorcycle": {
+        "ap2d_50": 0.36534939556047996,
+        "gt_count": 94,
+        "tp": 30,
+        "fp": 10,
+        "fn": 64,
+        "precision": 0.75,
+        "recall": 0.3191489361702128
+      }
+    },
+    "map2d_50": 0.4985465278778281,
+    "macro_class_count": 5
+  }
+}

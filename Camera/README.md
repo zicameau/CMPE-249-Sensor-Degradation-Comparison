@@ -2,11 +2,28 @@
 
 ## Overview
 
-This project evaluates **YOLO11s as a camera-only object detection baseline** for autonomous-driving perception under controlled image degradation.
+This project evaluates **YOLO11s as a camera-only object detection baseline** for autonomous-driving perception under controlled image degradation using nuScenes and ROS 2.
 
-Using the nuScenes dataset and ROS 2, the camera lane measures detection accuracy, robustness, and CPU inference latency. It also provides a common camera-space evaluation framework to support comparisons with the CenterPoint LiDAR-only and BEVFusion camera–LiDAR fusion lanes.
+The camera lane measures detection accuracy, robustness, and CPU inference latency. It also supports a shared CAM_FRONT 2D evaluation comparing YOLO11s, TransFusion-L (LiDAR), and BEVFusion (camera–LiDAR fusion).
 
-**Status:** Independent camera implementation, experiments, and validation complete. Cross-model integration is pending teammate results.
+**Status:** Camera implementation, degradation experiments, shared three-model evaluation, and regression testing complete. The TransFusion-L and BEVFusion comparison results use a reproducible diagnostic Z-coordinate adjustment whose exporter-level validity remains unverified.
+
+## Shared Three-Model Comparison
+
+| Model | CAM_FRONT mAP50 | Evaluation Status |
+|---|---:|---|
+| YOLO11s | 0.3444 | Verified clean |
+| TransFusion-L | 0.4790 | Diagnostic Z-adjusted |
+| BEVFusion | 0.4985 | Diagnostic Z-adjusted |
+
+All three models were evaluated against the same 81-sample CAM_FRONT validation subset using a common 2D AP50 protocol.
+
+BEVFusion achieved the highest projected 2D mAP50, followed by TransFusion-L and YOLO11s. However, the TransFusion-L and BEVFusion results remain provisional because the original exporters' Z-coordinate conventions have not been independently verified.
+
+These results represent **projected 2D detection performance**, not native nuScenes 3D detection accuracy or a matched comparison of sensor degradation robustness.
+
+For detailed methodology, reproducibility instructions, and evaluation limitations, see `results/shared_2d_comparison/README.md`.
+
 
 ## Implementation
 
