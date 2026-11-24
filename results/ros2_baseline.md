@@ -41,8 +41,10 @@ Replay at 0.1× speed with `--process-all`, so every sweep is processed and noth
 | LiDAR input | 20 Hz |
 | Throughput | **2.5 Hz** (about 1 in 8 sweeps) |
 | Latency p50 / p90 / p99 | **416 / 473 / 672 ms** |
-| Real-time mAP / NDS | 0.378 / 0.463 |
-| Real-time mAP / NDS, velocity-extrapolated | 0.483 / 0.519 |
+| Real-time mAP / NDS | 0.378 / 0.470 |
+| Real-time mAP / NDS, velocity-extrapolated | 0.483 / 0.526 |
+
+Real-time NDS corrected on 2026-11-23 (previously 0.463 / 0.519): the evaluator had rotated moved boxes' headings the wrong way. mAP values are unaffected; details in [ros2_timing_stress.md](ros2_timing_stress.md).
 
 **Latency per processed sweep** (median, ms): queue 30 · camera sync 33 · preprocessing 136 (decode 6 JPEGs, merge 10 sweeps of ~233k points, resize/normalize) · inference 218 · publish 3.
 

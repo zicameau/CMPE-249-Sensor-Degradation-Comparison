@@ -96,6 +96,19 @@ bash ros2/run_timing_stress.sh rate2 delay100   # selected runs
 
 Runs: replay at 1× (×3), 2×, 4×; camera clock offset 0–500 ms and all cameras off (keyframes only); camera delay 100/300 ms (and 300 ms with a 500 ms sync timeout); no previous sweeps, 75% point drop, darkened images. Output in `results/ros/stress/`: per run a `.pkl` (raw), `.json` (scored), node/replay/eval logs, and a GPU CSV. `ros2/compare_common_keyframes.py` re-scores several runs on the keyframes all of them processed. Results: [../results/ros2_timing_stress.md](../results/ros2_timing_stress.md).
 
+### Live demo
+
+Recording: [../results/ros2_live_demo.mp4](../results/ros2_live_demo.mp4) (both mini-val scenes, real time).
+
+`ros2/demo_viewer.py` subscribes to the same topics and draws a bird's-eye view of the newest LiDAR sweep with the newest BEVFusion boxes (moved to cancel the car's own motion since their sweep), the front camera, and live stats: LiDAR input rate, detection output rate, and box age. Moving objects visibly lead their boxes by the box age. It streams to a browser, because desktop windows from WSL (WSLg) may not draw. The container needs the port published (`-p 8765:8765` in `docker run`), then:
+
+```bash
+bash ros2/run_demo.sh      # loads the node, starts the viewer, waits for Enter, replays at 1x
+# open http://localhost:8765 in a browser on Windows
+```
+
+Add `--record results/demo/demo.mp4` to also save the view as a video. The viewer runs OpenCV single-threaded; with OpenCV's default (one thread per core) it slowed the node's CPU preprocessing about 4× (126 → 503 ms).
+
 You can watch topics from a third terminal with `ros2 topic list`, `ros2 topic hz /bevfusion/detections` (output rate), or `ros2 topic echo /bevfusion/detections`.
 
 ## Notes

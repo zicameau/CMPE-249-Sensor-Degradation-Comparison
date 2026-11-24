@@ -25,12 +25,14 @@ Reference points: the offline model scores mAP 0.582 / NDS 0.584; the node with 
 
 | Run | Throughput | Latency p50 / p90 / p99 (ms) | Box age p50 | Real-time mAP / NDS | Extrapolated mAP / NDS |
 |---|---:|---:|---:|---:|---:|
-| 1 | 2.44 Hz | 423 / 485 / 765 | 625 ms | 0.374 / 0.461 | 0.476 / 0.512 |
-| 2 | 2.52 Hz | 413 / 464 / 645 | 599 ms | 0.379 / 0.465 | 0.486 / 0.522 |
-| 3 | 2.49 Hz | 413 / 469 / 607 | 601 ms | 0.380 / 0.464 | 0.486 / 0.522 |
-| **mean** | **2.48 Hz** | **416 / 473 / 672** | **~610 ms** | **0.378 / 0.463** | **0.483 / 0.519** |
+| 1 | 2.44 Hz | 423 / 485 / 765 | 625 ms | 0.374 / 0.467 | 0.476 / 0.519 |
+| 2 | 2.52 Hz | 413 / 464 / 645 | 599 ms | 0.379 / 0.472 | 0.486 / 0.530 |
+| 3 | 2.49 Hz | 413 / 469 / 607 | 601 ms | 0.380 / 0.470 | 0.486 / 0.529 |
+| **mean** | **2.48 Hz** | **416 / 473 / 672** | **~610 ms** | **0.378 / 0.470** | **0.483 / 0.526** |
 
 Run-to-run spread is under ±0.005 mAP, so differences larger than about 0.01 between conditions below are real.
+
+**Correction (2026-11-23):** the real-time NDS values were first reported slightly low (0.463 / 0.519 for the mean). When the evaluator moved old boxes to cancel the car's own motion, it rotated their heading the wrong way (BEVFusion's yaw turns clockwise), which added heading error whenever the car turned. Fixed in `ros2/evaluate_ros_results.py` (fork commit [`4505425`](https://github.com/christiankso/bevfusion/commit/4505425)) and all saved runs re-scored. Every mAP value, every keyframe score, and all timing results are unchanged; only real-time and extrapolated NDS rose, by 0.004–0.015 (most at 2× and 4×, where boxes are older). The JSON files in [ros2/stress/](ros2/stress/) are the re-scored ones.
 
 **Latency breakdown** (median, ms): queue 30 · camera sync 33 · preprocessing 136 · inference 218 · publish 3.
 

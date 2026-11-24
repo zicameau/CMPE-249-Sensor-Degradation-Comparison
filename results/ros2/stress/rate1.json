@@ -25,9 +25,9 @@
   "mAP": 0.009535923530426116,
   "NDS": 0.1948655702525432,
   "realtime_mAP": 0.3737688163168712,
-  "realtime_NDS": 0.4607311445264921,
+  "realtime_NDS": 0.4671966549600818,
   "realtime_extrapolated_mAP": 0.4755971896910746,
-  "realtime_extrapolated_NDS": 0.5120268756914168,
+  "realtime_extrapolated_NDS": 0.5192512190609561,
   "realtime_keyframes_covered": 74,
   "realtime_box_age_ms": {
     "mean": 618.9314054054054,
@@ -36,6 +36,8 @@
     "p99": 814.2713199999998,
     "max": 851.0020000000001
   },
+  "lidar_input_hz": 20.056178561047556,
+  "throughput_hz": 2.443392312005794,
   "timing_ms": {
     "latency_ms": {
       "mean": 452.5474292603964,
@@ -80,8 +82,6 @@
       "max": 5.9479360002114845
     }
   },
-  "lidar_input_hz": 20.056178561047556,
-  "throughput_hz": 2.443392312005794,
   "max_camera_offset_ms": 44.404,
   "resources": {
     "cpu_percent": {

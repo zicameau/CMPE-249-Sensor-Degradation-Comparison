@@ -26,9 +26,9 @@
   "mAP": 0.02819899489430271,
   "NDS": 0.11194881706997244,
   "realtime_mAP": 0.312160520706463,
-  "realtime_NDS": 0.4259192630202195,
+  "realtime_NDS": 0.4387480074229,
   "realtime_extrapolated_mAP": 0.41127012576062816,
-  "realtime_extrapolated_NDS": 0.4671133078059035,
+  "realtime_extrapolated_NDS": 0.4807975560126165,
   "realtime_keyframes_covered": 73,
   "realtime_box_age_ms": {
     "mean": 1116.4427260273976,

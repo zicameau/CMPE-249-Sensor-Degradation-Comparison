@@ -20,7 +20,7 @@
   "keyframes_processed": 81,
   "mAP": 0.578158840465869,
   "NDS": 0.5784781600489018,
-  "timing_all_frames": {
+  "timing_ms": {
     "latency_ms": {
       "mean": 1215.9058220152317,
       "p50": 1181.0899429999608,
